@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объявление - ASQUIRE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        /*.splide__slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+        }*/
+
+
+/* ===== Большая галерея объявления ===== */
+#adGallery .splide__track {
+    height: 400px;
+}
+
+#adGallery .splide__slide {
+    height: 100%;
+}
+
+#adGallery .splide__slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+/* ===== Карточки похожих объявлений ===== */
+#similarAds .splide__slide img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+
+        .thumbnail img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        .thumbnail.is-active img {
+            opacity: 1;
+            border: 2px solid #3b82f6;
+        }
+        .seller-info {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        .message-modal {
+            backdrop-filter: blur(10px);
+        }
+        .lightbox {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+        .breadcrumb a:hover {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Навигация -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold gradient-text">ASQUIRE</h1>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-blue-600 transition-colors">Главная</a>
+                    <a href="ads.html" class="text-gray-700 hover:text-blue-600 transition-colors">Объявления</a>
+                    <a href="#" id="createAdBtn" class="text-gray-700 hover:text-blue-600 transition-colors">Подать объявление</a>
+                    <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Войти</button>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Хлебные крошки -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <nav class="breadcrumb flex items-center space-x-2 text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors">Главная</a>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <a href="ads.html" class="hover:text-blue-600 transition-colors">Объявления</a>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+            </svg>
+            <!-- dynamic title -->
+            <span id="breadcrumbTitle" class="text-gray-900 font-medium">Название</span>
+        </nav>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Левая колонка: Галерея и описание -->
+            <div class="lg:col-span-2">
+                <!-- Галерея изображений -->
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <div class="splide" id="adGallery">
+                        <div class="splide__track">
+                            <ul class="splide__list">
+                                <!-- Keep original slides structure so old JS can update them.
+                                     If JS provides images it will replace these src attributes.
+                                     If JS wants to rebuild slides, it can target .splide__list -->
+                                <li class="splide__slide">
+                                    <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=600&fit=crop" alt="iPhone 14 Pro" onclick="openLightbox(0)">
+                                </li>
+                                <li class="splide__slide">
+                                    <img src="https://images.unsplash.com/photo-1589492477829-5e65395b66cc?w=800&h=600&fit=crop" alt="iPhone 14 Pro" onclick="openLightbox(1)">
+                                </li>
+                                <li class="splide__slide">
+                                    <img src="https://images.unsplash.com/photo-1603891128711-11b4b03bb138?w=800&h=600&fit=crop" alt="iPhone 14 Pro" onclick="openLightbox(2)">
+                                </li>
+                                <li class="splide__slide">
+                                    <img src="https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=800&h=600&fit=crop" alt="iPhone 14 Pro" onclick="openLightbox(3)">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Миниатюры -->
+                    <div class="flex gap-2 mt-4 justify-center" id="thumbnails">
+                        <!-- Keep thumbnails (original structure). Old JS adds listeners by selecting '.thumbnail' -->
+                        <div class="thumbnail is-active" data-slide="0">
+                            <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=100&h=100&fit=crop" alt="Миниатюра 1">
+                        </div>
+                        <div class="thumbnail" data-slide="1">
+                            <img src="https://images.unsplash.com/photo-1589492477829-5e65395b66cc?w=100&h=100&fit=crop" alt="Миниатюра 2">
+                        </div>
+                        <div class="thumbnail" data-slide="2">
+                            <img src="https://images.unsplash.com/photo-1603891128711-11b4b03bb138?w=100&h=100&fit=crop" alt="Миниатюра 3">
+                        </div>
+                        <div class="thumbnail" data-slide="3">
+                            <img src="https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=100&h=100&fit=crop" alt="Миниатюра 4">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Описание -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Описание товара</h2>
+                    <div class="prose max-w-none text-gray-700">
+                        <p class="mb-4">
+                            Текст описания товара
+                        </p>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t">
+    <h3 class="text-xl font-semibold text-gray-900 mb-4">Характеристики</h3>
+        <ul id="characteristicsList" class="space-y-1"></ul>
+</div>
+                </div>
+            </div>
+
+            <!-- Правая колонка: Информация о товаре и продавце -->
+            <div class="lg:col-span-1">
+                <!-- Информация о товаре -->
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                    <!-- dynamic title -->
+                    <div class="mb-4">
+                        <h1 id="adTitle" class="text-2xl font-bold text-gray-900 mb-2">Название</h1>
+                        <p id="adPublished" class="text-sm text-gray-500">Опубликовано назад</p>
+                    </div>
+
+                    <div class="mb-6">
+                        <div id="adPrice" class="text-3xl font-bold text-blue-600 mb-2">85,000 ₽</div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span id="adLocation">Москва, м. Тверская</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <!-- delete button: same width/height as others -->
+                        <button id="deleteAdBtn" class="bg-red-600 text-white w-full py-3 rounded-lg hover:bg-red-700 hidden">
+                            Удалить объявление
+                        </button>
+
+                        <button id="showPhoneBtn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold">
+                            Показать телефон
+                        </button>
+                        <button id="messageBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                            Написать сообщение
+                        </button>
+                        <button id="favoriteBtn" class="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            В избранное
+                        </button>
+                    </div>
+
+                    <div class="text-center text-sm text-gray-600">
+                        <p>№ объявления: <span id="adId">123456789</span></p>
+                        <p>Просмотров: <span id="adViews">156</span></p>
+                    </div>
+                </div>
+
+                <!-- Информация о продавце -->
+<div class="seller-info rounded-lg p-6 mb-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Продавец</h3>
+
+    <div class="flex items-center mb-4">
+        <div
+            id="sellerAvatar"
+            class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold mr-4"
+        >
+            --
+        </div>
+        <div>
+            <div id="sellerName" class="font-semibold text-gray-900">Имя</div>
+            <div id="sellerSince" class="text-sm text-gray-600">На сайте с</div>
+        </div>
+    </div>
+
+    <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+            <span class="text-gray-600">Объявлений:</span>
+            <span id="sellerAdsCount" class="font-medium">—</span>
+        </div>
+    </div>
+
+<button id="sellerAdsBtn" class="w-full mt-4 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm font-medium">
+                        Все объявления продавца
+                    </button>
+                </div>
+
+
+
+                    
+
+                <!-- Безопасность сделки -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h4 class="font-semibold text-yellow-800 mb-2">💡 Советы по безопасности</h4>
+                    <ul class="text-sm text-yellow-700 space-y-1">
+                        <li>• Встречайтесь в безопасных местах</li>
+                        <li>• Проверяйте товар перед покупкой</li>
+                        <li>• Не переводите деньги заранее</li>
+                        <li>• Берите чек и гарантийные документы</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+</div>
+ <!-- Похожие объявления -->
+<section class="max-w-7xl mx-auto mt-12">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Похожие объявления</h2>
+
+    <div class="splide" id="similarAds">
+        <div class="splide__track">
+            <ul class="splide__list" id="similarAdsList"></ul>
+        </div>
+    </div>
+</section>
+<br><br>
+
+    <!-- Модальные окна и лайтбокс (оставлены как у тебя) -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-6 text-center">Вход в аккаунт</h3>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" name="email" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Пароль</label>
+                    <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">Войти</button>
+                    <button type="button" id="closeLoginModal" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-6 text-center">Регистрация</h3>
+            <form id="registerForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Имя</label>
+                    <input type="text" name="name" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" name="email" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Пароль</label>
+                    <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">Зарегистрироваться</button>
+                    <button type="button" id="closeRegisterModal" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 message-modal hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-6 text-center">Написать сообщение</h3>
+            <form id="messageForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Ваше имя</label>
+                    <input name="name" type="text" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Телефон</label>
+                    <input name="phone" type="tel" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Сообщение</label>
+                    <textarea name="message" rows="4" class="w-full px-3 py-2 border rounded-lg" required placeholder="Здравствуйте! Интересует ваш товар..."></textarea>
+                </div>
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg">Отправить</button>
+                    <button type="button" id="closeMessageModal" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="lightbox" class="fixed inset-0 lightbox hidden items-center justify-center z-50" onclick="closeLightbox()">
+        <div class="relative max-w-4xl max-h-full p-4">
+            <img id="lightboxImage" src="" alt="" class="max-w-full max-h-full object-contain">
+            <button class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300" onclick="closeLightbox()">&times;</button>
+        </div>
+    </div>
+
+    <!-- Подвал -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold gradient-text mb-4">ASQUIRE</h3>
+                <p class="text-gray-400 mb-6">© 2025 ASQUIRE. Все права защищены.</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">О нас</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Помощь</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Контакты</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Правила</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="ad-detail.js"></script>
+    <script>
+        // Специфические скрипты для детальной страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdDetailPage();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASQUIRE - Покупай и продавай с удовольствием</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" rel="stylesheet">
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><circle cx="30" cy="30" r="2"/></g></svg>');
+            animation: float 20s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-20px) translateX(10px); }
+            100% { transform: translateY(0px) translateX(0px); }
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .category-icon {
+            transition: all 0.3s ease;
+        }
+        .category-icon:hover {
+            transform: scale(1.1);
+        }
+        .search-input {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+	.splide__slide {
+	    min-width: 280px !important;
+	}
+        .splide__slide img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Навигация -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold gradient-text">ASQUIRE</h1>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-blue-600 font-medium">Главная</a>
+                    <a href="ads.html" class="text-gray-700 hover:text-blue-600 transition-colors">Объявления</a>
+                   <a id="createAdLinkNav" href="#" class="text-gray-700 hover:text-blue-600 transition-colors">Подать объявление</a>
+                    <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Войти</button>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Героический блок -->
+    <section class="hero-bg py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 opacity-0" id="heroTitle">
+                    Найди то, что нужно
+                </h1>
+                <p class="text-xl text-white mb-8 max-w-2xl mx-auto opacity-0" id="heroSubtitle">
+                    Тысячи товаров и услуг ждут тебя. Покупай, продавай, обменивайся с удовольствием.
+                </p>
+                
+                <!-- Поиск -->
+                <div class="max-w-2xl mx-auto mb-8 opacity-0" id="heroSearch">
+                    <div class="relative">
+                        <input type="text" id="mainSearch" placeholder="Что вы ищете?" 
+                               class="search-input w-full px-6 py-4 text-lg rounded-full border-0 focus:ring-4 focus:ring-blue-300 outline-none">
+                        <button class="absolute right-2 top-2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Популярные категории -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-12">Популярные категории</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <div class="category-card text-center p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+     data-category-slug="electronics">
+    <div class="text-4xl mb-3">📱</div>
+    <h3 class="font-semibold text-gray-900">Электроника</h3>
+    <p class="text-sm text-gray-600 mt-1">
+        <span class="category-count">—</span> объявлений
+    </p>
+</div>
+
+<div class="category-card text-center p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+     data-category-slug="real-estate">
+    <div class="text-4xl mb-3">🏠</div>
+    <h3 class="font-semibold text-gray-900">Недвижимость</h3>
+    <p class="text-sm text-gray-600 mt-1">
+        <span class="category-count">—</span> объявлений
+    </p>
+</div>
+
+<div class="category-card text-center p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+     data-category-slug="vehicles">
+    <div class="text-4xl mb-3">🚗</div>
+    <h3 class="font-semibold text-gray-900">Автомобили</h3>
+    <p class="text-sm text-gray-600 mt-1">
+        <span class="category-count">—</span> объявлений
+    </p>
+</div>
+
+<div class="category-card text-center p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+     data-category-slug="clothes">
+    <div class="text-4xl mb-3">👕</div>
+    <h3 class="font-semibold text-gray-900">Одежда</h3>
+    <p class="text-sm text-gray-600 mt-1">
+        <span class="category-count">—</span> объявлений
+    </p>
+</div>
+
+<div class="category-card text-center p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+     data-category-slug="furniture">
+    <div class="text-4xl mb-3">🪑</div>
+    <h3 class="font-semibold text-gray-900">Мебель</h3>
+    <p class="text-sm text-gray-600 mt-1">
+        <span class="category-count">—</span> объявлений
+    </p>
+</div>
+
+<div class="category-card text-center p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer"
+     data-category-slug="sports">
+    <div class="text-4xl mb-3">⚽</div>
+    <h3 class="font-semibold text-gray-900">Спорт</h3>
+    <p class="text-sm text-gray-600 mt-1">
+        <span class="category-count">—</span> объявлений
+    </p>
+</div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Популярные объявления -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900">Популярные объявления</h2>
+                <a href="ads.html" class="text-blue-600 hover:text-blue-700 font-medium">Смотреть все →</a>
+            </div>
+            
+            <div class="splide" id="popularAds">
+                <div class="splide__track">
+                    <ul class="splide__list" id="popularAdsList">
+                        <!-- Карточки будут добавлены JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Призыв к действию -->
+    <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold text-white mb-6">Готовы начать?</h2>
+            <p class="text-xl text-white mb-8 max-w-2xl mx-auto">
+                Разместите своё первое объявление и начните зарабатывать уже сегодня!
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a id="createAdLinkCTA" href="#" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition colors">
+    		Подать объявление
+		</a>
+
+                <a href="ads.html" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                    Найти товары
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold gradient-text mb-4">ASQUIRE</h3>
+                <p class="text-gray-400 mb-6">© 2025 ASQUIRE. Все права защищены.</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">О нас</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Помощь</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Контакты</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Правила</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+   <!-- Модальное окно входа -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+        <h3 class="text-2xl font-bold mb-6 text-center">Вход в аккаунт</h3>
+
+        <form id="loginForm">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input 
+                    type="email" 
+                    name="email"   
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required
+                >
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Пароль</label>
+                <input 
+                    type="password" 
+                    name="password"  
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required
+                >
+            </div>
+
+            <div class="flex gap-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Войти
+                </button>
+
+                <button type="button" id="closeLoginModal" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                    Отмена
+                </button>
+            </div>
+        </form>
+
+        <p class="text-center mt-4 text-sm text-gray-600">
+            Нет аккаунта? 
+            <a href="#" id="openRegisterFromLogin" class="text-blue-600 hover:underline">Зарегистрироваться</a>
+        </p>
+    </div>
+</div>
+
+<!-- Модальное окно регистрации -->
+<div id="registerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+        <h3 class="text-2xl font-bold mb-6 text-center">Регистрация</h3>
+
+        <form id="registerForm">
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Логин (username)</label>
+                <input type="text" name="username" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Имя</label>
+                <input type="text" name="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input type="email" name="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Телефон</label>
+                <input type="tel" name="phone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Пароль</label>
+                <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div class="flex gap-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Создать аккаунт
+                </button>
+
+                <button type="button" id="closeRegisterModal" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                    Отмена
+                </button>
+            </div>
+        </form>
+
+        <p class="text-center mt-4 text-sm text-gray-600">
+            Уже есть аккаунт?
+            <a href="#" id="openLoginFromRegister" class="text-blue-600 hover:underline">Войти</a>
+        </p>
+    </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

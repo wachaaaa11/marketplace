@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль — ASQUIRE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" rel="stylesheet">
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+	.gradient-text {
+        	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        	-webkit-background-clip: text;
+        	-webkit-text-fill-color: transparent;
+        	background-clip: text;
+        }
+    </style>
+<style>
+    .splide__slide img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    /* Карточка как на главной */
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    /* Стрелки Splide как на главной */
+    .splide__arrow {
+        background: white;
+        border-radius: 9999px;
+        width: 38px;
+        height: 38px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .splide__arrow svg {
+        fill: #4f46e5; /* синий как на главной */
+        width: 20px;
+        height: 20px;
+    }
+</style>
+
+</head>
+<body class="bg-gray-50">
+
+    <!-- Навигация -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-2xl font-bold gradient-text">ASQUIRE</h1>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-blue-600">Главная</a>
+                    <a href="ads.html" class="text-gray-700 hover:text-blue-600">Объявления</a>
+                    <a href="create-ad.html" class="text-gray-700 hover:text-blue-600">Подать объявление</a>
+
+                    <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                        Выйти
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-3xl mx-auto px-4 py-12">
+        <h2 class="text-3xl font-bold mb-6">Ваш профиль</h2>
+
+        <div class="bg-white shadow rounded-xl p-8">
+            <p class="text-gray-700 text-lg mb-6">Добро пожаловать!</p>
+
+            <!-- =============================
+                 ПРОСМОТР ВСЕХ ДАННЫХ
+            ============================== -->
+            <div id="profileView" class="space-y-4">
+
+                <h3 class="text-2xl font-semibold mb-4">Ваши данные</h3>
+
+                <p><strong>Логин:</strong> <span id="viewUsername"></span></p>
+                <p><strong>Email:</strong> <span id="viewEmail"></span></p>
+                <p><strong>Имя:</strong> <span id="viewName"></span></p>
+                <p><strong>Телефон:</strong> <span id="viewPhone"></span></p>
+                <p><strong>Дата регистрации:</strong> <span id="viewCreated"></span></p>
+                <p><strong>Рейтинг:</strong> <span id="viewRating"></span></p>
+                <p><strong>Подтверждён:</strong> <span id="viewVerified"></span></p>
+
+                <button id="editBtn"
+                    class="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                    Внести изменения
+                </button>
+            </div>
+
+            <!-- =============================
+                 ФОРМА РЕДАКТИРОВАНИЯ
+            ============================== -->
+            <div id="profileEdit" class="space-y-4 hidden">
+
+                <h3 class="text-2xl font-semibold mb-4">Редактирование данных</h3>
+
+                <div>
+                    <label class="text-gray-500">Новый логин:</label>
+                    <input id="inputUsername" class="border p-2 rounded w-full" type="text">
+                </div>
+
+                <div>
+                    <label class="text-gray-500">Имя:</label>
+                    <input id="inputName" class="border p-2 rounded w-full" type="text">
+                </div>
+
+                <div>
+                    <label class="text-gray-500">Телефон:</label>
+                    <input id="inputPhone" class="border p-2 rounded w-full" type="text">
+                </div>
+
+                <div>
+                    <label class="text-gray-500">Новый пароль:</label>
+                    <input id="inputPassword" class="border p-2 rounded w-full" type="password" placeholder="Если не хотите менять — оставьте пустым">
+                </div>
+
+                <div class="flex space-x-4">
+                    <button id="saveBtn"
+                        class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
+                        Сохранить
+                    </button>
+
+                    <button id="cancelEditBtn"
+                        class="bg-gray-400 text-white px-6 py-3 rounded-lg hover:bg-gray-500">
+                        Отмена
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <button id="logoutBtnMobile"
+            class="mt-8 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 w-full md:hidden">
+            Выйти из аккаунта
+        </button>
+    </div>
+
+<!-- МОИ ОБЪЯВЛЕНИЯ — Splide -->
+<section class="max-w-7xl mx-auto mt-10">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Ваши объявления</h2>
+
+    <div class="splide" id="myAds">
+        <div class="splide__track">
+            <ul class="splide__list" id="myAdsList"></ul>
+        </div>
+    </div>
+</section>
+<br><br>
+
+    <!-- ПОДКЛЮЧАЕМ main.js -->
+    <script src="main.js"></script>
+    <!-- ПОДКЛЮЧАЕМ profile.js (только на странице profile.html) -->
+    <script src="profile.js"></script>
+</body>
+</html>

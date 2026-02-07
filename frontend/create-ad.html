@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подать объявление - ASQUIRE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .upload-area:hover {
+            border-color: #9ca3af;
+            background-color: #f9fafb;
+        }
+        .image-preview {
+            position: relative;
+            display: inline-block;
+        }
+        .image-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        .step-indicator.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .step-indicator.completed {
+            background-color: #10b981;
+            color: white;
+        }
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+        .category-option {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .category-option:hover {
+            background-color: #f3f4f6;
+        }
+        .category-option.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Навигация -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold gradient-text">ASQUIRE</h1>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-blue-600 transition-colors">Главная</a>
+                    <a href="ads.html" class="text-gray-700 hover:text-blue-600 transition-colors">Объявления</a>
+                    <a href="create-ad.html" class="text-blue-600 font-medium">Подать объявление</a>
+                    <button id="loginBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Войти</button>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Заголовок -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Подать объявление</h1>
+            <p class="text-gray-600">Заполните информацию о вашем товаре или услуге</p>
+        </div>
+
+        <!-- Индикаторы шагов -->
+        <div class="flex justify-center mb-8">
+            <div class="flex items-center space-x-4">
+                <div class="step-indicator active w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm" data-step="1">1</div>
+                <div class="w-16 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-semibold text-sm" data-step="2">2</div>
+                <div class="w-16 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-semibold text-sm" data-step="3">3</div>
+                <div class="w-16 h-1 bg-gray-300"></div>
+                <div class="step-indicator w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-semibold text-sm" data-step="4">4</div>
+            </div>
+        </div>
+
+        <!-- Форма -->
+        <form id="createAdForm" class="bg-white rounded-lg shadow-lg p-8">
+            <!-- Шаг 1: Категория -->
+            <div class="form-step active" data-step="1">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6">Выберите категорию</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="category-option border-2 border-gray-200 rounded-lg p-4 text-center" data-category="electronics">
+                        <div class="text-3xl mb-2">📱</div>
+                        <h3 class="font-semibold">Электроника</h3>
+                        <p class="text-sm text-gray-600">Телефоны, ноутбуки, компьютеры</p>
+                    </div>
+                    <div class="category-option border-2 border-gray-200 rounded-lg p-4 text-center" data-category="real-estate">
+                        <div class="text-3xl mb-2">🏠</div>
+                        <h3 class="font-semibold">Недвижимость</h3>
+                        <p class="text-sm text-gray-600">Квартиры, дома, коммерческая</p>
+                    </div>
+                    <div class="category-option border-2 border-gray-200 rounded-lg p-4 text-center" data-category="vehicles">
+                        <div class="text-3xl mb-2">🚗</div>
+                        <h3 class="font-semibold">Автомобили</h3>
+                        <p class="text-sm text-gray-600">Легковые, грузовые, мотоциклы</p>
+                    </div>
+                    <div class="category-option border-2 border-gray-200 rounded-lg p-4 text-center" data-category="clothes">
+                        <div class="text-3xl mb-2">👕</div>
+                        <h3 class="font-semibold">Одежда</h3>
+                        <p class="text-sm text-gray-600">Мужская, женская, детская</p>
+                    </div>
+                    <div class="category-option border-2 border-gray-200 rounded-lg p-4 text-center" data-category="furniture">
+                        <div class="text-3xl mb-2">🪑</div>
+                        <h3 class="font-semibold">Мебель</h3>
+                        <p class="text-sm text-gray-600">Для дома, офиса, сада</p>
+                    </div>
+                    <div class="category-option border-2 border-gray-200 rounded-lg p-4 text-center" data-category="sports">
+                        <div class="text-3xl mb-2">⚽</div>
+                        <h3 class="font-semibold">Спорт</h3>
+                        <p class="text-sm text-gray-600">Оборудование, инвентарь, одежда</p>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedCategory" name="category" required>
+            </div>
+
+            <!-- Шаг 2: Основная информация -->
+            <div class="form-step" data-step="2">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6">Основная информация</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Название объявления *</label>
+                        <input type="text" id="title" name="title" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Например: iPhone 14 Pro 128GB">
+                        <p class="text-sm text-gray-500 mt-1">Придумайте короткое и понятное название</p>
+                    </div>
+
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Описание *</label>
+                        <textarea id="description" name="description" rows="6" required
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  placeholder="Подробно опишите товар или услугу, укажите особенности, состояние, комплектацию..."></textarea>
+                        <p class="text-sm text-gray-500 mt-1">Чем подробнее описание, тем больше шансов продать</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Цена *</label>
+                            <input type="number" id="price" name="price" required min="0"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   placeholder="0">
+                        </div>
+                        <div>
+                            <label for="condition" class="block text-sm font-medium text-gray-700 mb-2">Состояние *</label>
+                            <select id="condition" name="condition" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Выберите состояние</option>
+                                <option value="new">Новое</option>
+                                <option value="like-new">Как новое</option>
+                                <option value="excellent">Отличное</option>
+                                <option value="good">Хорошее</option>
+                                <option value="fair">Удовлетворительное</option>
+                                <option value="poor">Плохое</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Город *</label>
+                        <select id="location" name="location" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Выберите город</option>
+                            <option value="moscow">Москва</option>
+                            <option value="spb">Санкт-Петербург</option>
+                            <option value="ekb">Екатеринбург</option>
+                            <option value="kazan">Казань</option>
+                            <option value="novosibirsk">Новосибирск</option>
+                            <option value="nizhny-novgorod">Нижний Новгород</option>
+                            <option value="chelyabinsk">Челябинск</option>
+                            <option value="samara">Самара</option>
+                            <option value="rostov">Ростов-на-Дону</option>
+                            <option value="ufa">Уфа</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Шаг 3: Фотографии -->
+            <div class="form-step" data-step="3">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6">Фотографии</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Фотографии товара</label>
+                        <div id="uploadArea" class="upload-area rounded-lg p-8 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <p class="text-lg font-medium text-gray-900 mb-2">Перетащите фотографии сюда</p>
+                            <p class="text-sm text-gray-500 mb-4">или нажмите для выбора файлов</p>
+                            <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
+                            <button type="button" id="selectFiles" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                Выбрать файлы
+                            </button>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Максимум 10 фотографий. Поддерживаемые форматы: JPG, PNG, GIF. Максимальный размер файла: 5MB</p>
+                    </div>
+
+                    <!-- Превью загруженных изображений -->
+                    <div id="imagePreview" class="hidden">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Загруженные фотографии</h3>
+                        <div id="previewContainer" class="flex flex-wrap gap-4">
+                            <!-- Превью будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- Шаг 4: Настройки публикации -->
+<div class="form-step" data-step="4">
+    <h2 class="text-2xl font-semibold text-gray-900 mb-6">Настройки публикации</h2>
+
+    <div class="space-y-6">
+
+        <div class="space-y-4">
+
+            <div class="flex items-center">
+                <input type="checkbox" id="allowMessages" name="allowMessages" checked class="text-blue-600 rounded">
+                <label for="allowMessages" class="ml-3 text-sm text-gray-700">
+                    Разрешить сообщения через сайт
+                </label>
+            </div>
+
+            <div class="flex items-center">
+                <input type="checkbox" id="showPhone" name="showPhone" checked class="text-blue-600 rounded">
+                <label for="showPhone" class="ml-3 text-sm text-gray-700">
+                    Показывать телефон в объявлении
+                </label>
+            </div>
+
+            <div class="flex items-center">
+                <input type="checkbox" id="acceptBargain" name="acceptBargain" class="text-blue-600 rounded">
+                <label for="acceptBargain" class="ml-3 text-sm text-gray-700">
+                    Готов к торгу
+                </label>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+            <!-- Навигация по шагам -->
+            <div class="flex justify-between mt-8 pt-8 border-t">
+                <button type="button" id="prevStep" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors hidden">
+                    ← Назад
+                </button>
+                <div class="flex gap-4 ml-auto">
+                    <button type="button" id="nextStep" class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Далее →
+                    </button>
+                    <button type="button" id="publishBtn" class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors hidden">
+                        Опубликовать
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+<!-- Модальное окно входа -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+        <h3 class="text-2xl font-bold mb-6 text-center">Вход в аккаунт</h3>
+
+        <form id="loginForm">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input 
+                    type="email" 
+                    name="email"  
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required
+                >
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Пароль</label>
+                <input 
+                    type="password" 
+                    name="password"  
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required
+                >
+            </div>
+
+            <div class="flex gap-4">
+                <button type="submit" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Войти
+                </button>
+
+                <button type="button" id="closeLoginModal" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+                    Отмена
+                </button>
+            </div>
+        </form>
+
+        <p class="text-center mt-4 text-sm text-gray-600">
+            Нет аккаунта? 
+            <a href="#" id="openRegisterFromLogin" class="text-blue-600 hover:underline">Зарегистрироваться</a>
+        </p>
+    </div>
+</div>
+
+    <!-- Подвал -->
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold gradient-text mb-4">ASQUIRE</h3>
+                <p class="text-gray-400 mb-6">© 2025 ASQUIRE. Все права защищены.</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">О нас</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Помощь</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Контакты</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Правила</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="create-ad.js"></script>
+    <script>
+        // Специфические скрипты для страницы создания объявления
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCreateAdPage();
+        });
+    </script>
+</body>
+</html>
