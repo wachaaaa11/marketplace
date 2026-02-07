@@ -46,7 +46,7 @@
 ├── backend/                 # Бэкенд часть приложения
 │   ├── server.js            # Express сервер
 │   ├── database/
-│       ├── database.db      # База данных
+│   │   ├── database.db      # База данных
 │   │   └── database.js      # Модуль работы с БД
 │   └── routes/
 │       ├── ads.js           # API маршруты объявлений
